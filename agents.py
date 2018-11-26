@@ -3,6 +3,10 @@ import random
 import torch
 
 
+# GPU or CPU
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+
 class DQNAgent:
     def __init__(self, env, net, replay, optimizer, discount):
         self.env = env
@@ -32,11 +36,11 @@ class DQNAgent:
         """
         state, action, reward, next_state, done = self.replay.sample(batch_size)
 
-        state      = torch.FloatTensor(state)
-        next_state = torch.FloatTensor(next_state)
-        action     = torch.LongTensor(action)
-        reward     = torch.FloatTensor(reward)
-        done       = torch.FloatTensor(done)
+        state      = torch.FloatTensor(state).to(device)
+        next_state = torch.FloatTensor(next_state).to(device)
+        action     = torch.LongTensor(action).to(device)
+        reward     = torch.FloatTensor(reward).to(device)
+        done       = torch.FloatTensor(done).to(device)
 
         q_values      = self.net(state)
         next_q_values = self.net(next_state)
